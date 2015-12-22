@@ -11,3 +11,72 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
 fi
 
 # Customize to your needs...
+
+##################
+## USER SETTING ##
+##################
+alias rm='rm -rf'
+alias eb='subl ~/.zshrc'
+alias sb='source ~/.zshrc'
+alias agi='sudo apt-get install'
+alias m='make -j4 -l4'
+alias gs='git status'
+alias gp='git pull'
+
+# Set ROS Indigo
+# source ~/rosbuild_ws/setup.bash
+# source /opt/ros/indigo/setup.bash
+# source ~/catkin_ws/devel/setup.bash
+source /opt/ros/indigo/setup.zsh
+source ~/catkin_ws/devel/setup.zsh
+alias cw='cd ~/catkin_ws'
+alias cs='cd ~/catkin_ws/src'
+alias rt='cd ~/catkin_ws/src/ros_tms'
+alias cm='cd ~/catkin_ws && nice -n 19 ionice -c 2 -n 7 catkin_make'
+
+# Set ROS Network
+# export ROS_MASTER_URI=http://192.168.4.170:11311
+export ROS_MASTER_URI=http://localhost:11311
+# export ROS_MASTER_URI=http://127.0.0.1:11311
+#export ROS_HOSTNAME=192.168.11.5
+# export ROS_HOSTNAME=192.168.4.111
+# export ROS_HOSTNAME=192.168.4.140
+export ROS_HOSTNAME=localhost
+# export ROS_HOSTNAME=127.0.0.1
+
+
+alias kc='sudo dpkg-reconfigure keyboard-configuration'
+alias beautify='clang-format-3.6 -style="{BasedOnStyle: Google, ColumnLimit: 100, IndentWidth: 2, UseTab: Never}" -i'
+alias beautify_all='find . -type f -regex ".*\.\(cpp\|h\)$"|while read f;do;beautify $f;done'
+alias comm_mbed='sudo gtkterm --port /dev/ttyACM0 --speed 115200'
+# alias topic_types="rostopic list -v |grep '\[.*\]' -o | awk '!a[$0]++'"
+alias topic_types="rostopic list -v |grep '\[.*\]' -o | sort|uniq"
+alias reset_net='sudo service network-manager restart'
+
+function exists { which $1 &> /dev/null }
+
+if exists percol; then
+    function percol_select_history() {
+        local tac
+        exists gtac && tac="gtac" || { exists tac && tac="tac" || { tac="tail -r" } }
+        BUFFER=$(fc -l -n 1 | eval $tac | percol --query "$LBUFFER")
+        CURSOR=$#BUFFER         # move cursor
+        zle -R -c               # refresh
+    }
+
+    zle -N percol_select_history
+    bindkey '^R' percol_select_history
+fi
+source /usr/share/autojump/autojump.sh
+
+alias trends="curl -s -S http://www.google.co.jp/trends/hottrends/atom/hourly | grep \"<li>\" | sed -e 's/<[^>]*>//g'"
+
+export GOROOT=/usr/local/go
+export GOPATH=$HOME/.go
+export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+
+#export GOROOT=$HOME/.go
+## export GOOS=linux
+## export GOARCH=amd64
+#export GOBIN=$GOROOT/bin
+#export PATH=$PATH:$GOBIN
