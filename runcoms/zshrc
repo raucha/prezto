@@ -47,7 +47,7 @@ export ROS_HOSTNAME=localhost
 
 alias kc='sudo dpkg-reconfigure keyboard-configuration'
 alias beautify='clang-format-3.6 -style="{BasedOnStyle: Google, ColumnLimit: 100, IndentWidth: 2, UseTab: Never}" -i'
-alias beautify_all='find . -type f -regex ".*\.\(cpp\|h\)$"|while read f;do;beautify $f;done'
+alias beautify_all='find . -type f -regex ".*\.\(c\|cpp\|cxx\|h\|hpp\|hxx\)$"|while read f;do;beautify $f;done'
 alias comm_mbed='sudo gtkterm --port /dev/ttyACM0 --speed 115200'
 # alias topic_types="rostopic list -v |grep '\[.*\]' -o | awk '!a[$0]++'"
 alias topic_types="rostopic list -v |grep '\[.*\]' -o | sort|uniq"
@@ -67,6 +67,7 @@ if exists percol; then
     zle -N percol_select_history
     bindkey '^R' percol_select_history
 fi
+
 source /usr/share/autojump/autojump.sh
 
 alias trends="curl -s -S http://www.google.co.jp/trends/hottrends/atom/hourly | grep \"<li>\" | sed -e 's/<[^>]*>//g'"
@@ -74,6 +75,14 @@ alias trends="curl -s -S http://www.google.co.jp/trends/hottrends/atom/hourly | 
 export GOROOT=/usr/local/go
 export GOPATH=$HOME/.go
 export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+
+function tex_build() {
+	filename=${1%.*}	# ファイル名抽出
+	command echo $filename
+	command platex $filename.tex
+	command dvipdfmx $filename.dvi
+	command evince $filename.pdf
+} 
 
 #export GOROOT=$HOME/.go
 ## export GOOS=linux
