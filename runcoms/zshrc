@@ -16,7 +16,7 @@ fi
 ## USER SETTING ##
 ##################
 alias rm='rm -rf'
-alias eb='subl ~/.zshrc'
+alias eb='gedit ~/.zshrc'
 alias sb='source ~/.zshrc'
 alias agi='sudo apt-get install'
 alias m='make -j4 -l4'
@@ -25,10 +25,9 @@ alias gp='git pull'
 
 # Set ROS Indigo
 # source ~/rosbuild_ws/setup.bash
-# source /opt/ros/indigo/setup.bash
-# source ~/catkin_ws/devel/setup.bash
-source /opt/ros/indigo/setup.zsh
-source ~/catkin_ws/devel/setup.zsh
+# source /opt/ros/indigo/setup.zsh
+# source ~/catkin_ws/devel/setup.zsh
+alias sr='source /opt/ros/indigo/setup.zsh && source ~/catkin_ws/devel/setup.zsh'
 alias cw='cd ~/catkin_ws'
 alias cs='cd ~/catkin_ws/src'
 alias rt='cd ~/catkin_ws/src/ros_tms'
@@ -67,7 +66,7 @@ if exists percol; then
     zle -N percol_select_history
     bindkey '^R' percol_select_history
 fi
-source /usr/share/autojump/autojump.sh
+source /usr/share/autojump/autojump.zsh
 
 alias trends="curl -s -S http://www.google.co.jp/trends/hottrends/atom/hourly | grep \"<li>\" | sed -e 's/<[^>]*>//g'"
 
