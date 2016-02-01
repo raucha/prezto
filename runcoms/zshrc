@@ -25,8 +25,8 @@ alias gp='git pull'
 
 # Set ROS Indigo
 # source ~/rosbuild_ws/setup.bash
-# source /opt/ros/indigo/setup.zsh
-# source ~/catkin_ws/devel/setup.zsh
+source /opt/ros/indigo/setup.zsh
+source ~/catkin_ws/devel/setup.zsh
 alias sr='source /opt/ros/indigo/setup.zsh && source ~/catkin_ws/devel/setup.zsh'
 alias cw='cd ~/catkin_ws'
 alias cs='cd ~/catkin_ws/src'
