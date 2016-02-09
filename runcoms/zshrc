@@ -11,38 +11,46 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
 fi
 
 # Customize to your needs...
-
-##################
-## USER SETTING ##
-##################
-alias rm='rm -rf'
-alias eb='gedit ~/.zshrc'
-alias sb='source ~/.zshrc'
-alias agi='sudo apt-get install'
-alias m='make -j4 -l4'
-alias gs='git status'
-alias gp='git pull'
-
-# Set ROS Indigo
+#  ____   ___  ____
+# |  _ \ / _ \/ ___|
+# | |_) | | | \___ \
+# |  _ <| |_| |___) |
+# |_| \_\\___/|____/
+ROS_WS=~/catkin_ws
+source /opt/ros/indigo/setup.zsh
+source $ROS_WS/devel/setup.zsh
 # source ~/rosbuild_ws/setup.bash
-# source /opt/ros/indigo/setup.zsh
-# source ~/catkin_ws/devel/setup.zsh
-alias sr='source /opt/ros/indigo/setup.zsh && source ~/catkin_ws/devel/setup.zsh'
-alias cw='cd ~/catkin_ws'
-alias cs='cd ~/catkin_ws/src'
-alias rt='cd ~/catkin_ws/src/ros_tms'
-alias cm='cd ~/catkin_ws && nice -n 19 ionice -c 2 -n 7 catkin_make'
+alias sr='source /opt/ros/indigo/setup.zsh && source $ROS_WS/devel/setup.zsh'
+alias cw='cd $ROS_WS'
+alias cm='cd $ROS_WS && nice -n 19 ionice -c 2 -n 7 catkin_make'
+function set_ros_ws() {
+  ROS_WS=`readlink -f $1`  # 絶対パスに変換
+  sr
+}
 
-# Set ROS Network
 # export ROS_MASTER_URI=http://192.168.4.170:11311
 export ROS_MASTER_URI=http://localhost:11311
 # export ROS_MASTER_URI=http://127.0.0.1:11311
-#export ROS_HOSTNAME=192.168.11.5
+# export ROS_HOSTNAME=192.168.11.5
 # export ROS_HOSTNAME=192.168.4.111
 # export ROS_HOSTNAME=192.168.4.140
 export ROS_HOSTNAME=localhost
 # export ROS_HOSTNAME=127.0.0.1
 
+# source ~/rocon/devel/setup.zsh
+# source ~/kobuki/devel/setup.zsh
+# source ~/turtlebot/devel/setup.zsh
+
+
+#  _   _ ____  _____ ____    ____  _____ _____ _____ ___ _   _  ____
+# | | | / ___|| ____|  _ \  / ___|| ____|_   _|_   _|_ _| \ | |/ ___|
+# | | | \___ \|  _| | |_) | \___ \|  _|   | |   | |  | ||  \| | |  _
+# | |_| |___) | |___|  _ <   ___) | |___  | |   | |  | || |\  | |_| |
+#  \___/|____/|_____|_| \_\ |____/|_____| |_|   |_| |___|_| \_|\____|
+alias eb='gedit ~/.zshrc'
+alias sb='source ~/.zshrc'
+alias agi='sudo apt-get install'
+alias m='make -j4 -l4'
 
 alias kc='sudo dpkg-reconfigure keyboard-configuration'
 alias beautify='clang-format-3.6 -style="{BasedOnStyle: Google, ColumnLimit: 100, IndentWidth: 2, UseTab: Never}" -i'
@@ -51,9 +59,25 @@ alias comm_mbed='sudo gtkterm --port /dev/ttyACM0 --speed 115200'
 # alias topic_types="rostopic list -v |grep '\[.*\]' -o | awk '!a[$0]++'"
 alias topic_types="rostopic list -v |grep '\[.*\]' -o | sort|uniq"
 alias reset_net='sudo service network-manager restart'
+alias tf_view='rosrun tf view_frames && evince frames.pdf'
+alias trends="curl -s -S http://www.google.co.jp/trends/hottrends/atom/hourly | grep \"<li>\" | sed -e 's/<[^>]*>//g'"
 
+function tex_build() {
+  filename=${1%.*}	# ファイル名抽出, "%.*":末尾から正規表現最短一致部分を削除
+  command echo $filename
+  command platex $filename.tex
+  command dvipdfmx $filename.dvi
+  command evince $filename.pdf
+}
+# ulimit -c unlimited
+
+
+#  ____  _    _   _  ____ ___ _   _ ____
+# |  _ \| |  | | | |/ ___|_ _| \ | / ___|
+# | |_) | |  | | | | |  _ | ||  \| \___ \
+# |  __/| |__| |_| | |_| || || |\  |___) |
+# |_|   |_____\___/ \____|___|_| \_|____/
 function exists { which $1 &> /dev/null }
-
 if exists percol; then
     function percol_select_history() {
         local tac
@@ -66,25 +90,25 @@ if exists percol; then
     zle -N percol_select_history
     bindkey '^R' percol_select_history
 fi
-
 source /usr/share/autojump/autojump.zsh
 
-alias trends="curl -s -S http://www.google.co.jp/trends/hottrends/atom/hourly | grep \"<li>\" | sed -e 's/<[^>]*>//g'"
 
-export GOROOT=/usr/local/go
-export GOPATH=$HOME/.go
-export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+#            _
+#  _____ __ | |_   _  __ _
+# |_  / '_ \| | | | |/ _` |
+#  / /| |_) | | |_| | (_| |
+# /___| .__/|_|\__,_|\__, |
+#     |_|            |___/
+source ~/.zplug/zplug
+zplug "b4b4r07/enhancd", of:zsh/enhancd.zsh
+zplug "djui/alias-tips", of:alias-tips.plugin.zsh
 
-function tex_build() {
-	filename=${1%.*}	# ファイル名抽出
-	command echo $filename
-	command platex $filename.tex
-	command dvipdfmx $filename.dvi
-	command evince $filename.pdf
-} 
-
-#export GOROOT=$HOME/.go
-## export GOOS=linux
-## export GOARCH=amd64
-#export GOBIN=$GOROOT/bin
-#export PATH=$PATH:$GOBIN
+# Install plugins if there are plugins that have not been installed
+if ! zplug check --verbose; then
+    printf "Install? [y/N]: "
+    if read -q; then
+        echo; zplug install
+    fi
+fi
+# Then, source plugins and add commands to $PATH
+zplug load --verbose
